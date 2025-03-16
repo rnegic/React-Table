@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './TableRow.module.css';
 import { DataItem } from '../../types';
 
