@@ -1,54 +1,23 @@
-# React + TypeScript + Vite
+# Иерархическая таблица данных с сортировкой и фильтрацией на Vite + React + Typescript
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Тестовое задание. 
 
-Currently, two official plugins are available:
+Веб-приложение отображает данные из исходного json-файла в таблицу.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Функционал:
 
-## Expanding the ESLint configuration
+* Раскрытие строк: строки, у которых есть дочерние элементы, можно раскрыть и посмотреть вложенные данные.
+* Сортировка: можно сортировать данные по столбцам баланса и почты
+* Фильтрация: данные можно отфильтровать по свойству isActive
+* Адаптивность: таблица отлично показывается и раскрываются на всех устройствах, включая десктопные и мобильные.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Особенности:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+* Использован компонентный функциональный подход и хуки (useState, useMemo)
+* Оптимизация производительности с помощью кеширования (useMemo)
+* Типобезопасность: использовал Typescript, повсеместно определял интерфейсы
+* Null-safety
+* Продуман UI/UX для удобной навигации
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Приложение залито на github pages:
+https://rnegic.github.io/React-Table/
