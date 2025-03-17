@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { data } from './data';
 import { DataItem } from './types';
 import Table from './components/Table/Table';
+import FilterButton from './components/FilterButton/FilterButton';
 import styles from './App.module.css';
 
 function App() {
@@ -57,28 +58,30 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <h1>Таблица данных</h1>
-      <div className={styles.filterButtons}>
-        <button
-          className={filterActive === 'all' ? styles.activeButton : styles.button}
-          onClick={() => setFilterActive('all')}
-        >
-          All
-        </button>
-        <button
-          className={filterActive === 'active' ? styles.activeButton : styles.button}
-          onClick={() => setFilterActive('active')}
-        >
-          Active
-        </button>
-        <button
-          className={filterActive === 'inactive' ? styles.activeButton : styles.button}
-          onClick={() => setFilterActive('inactive')}
-        >
-          Inactive
-        </button>
+      <div className={styles.wrapper}>
+        <h1>Таблица данных</h1>
+        <div className={styles.filterButtons}>
+          <FilterButton
+            isActive={filterActive === 'all'}
+            onClick={() => setFilterActive('all')}
+          >
+            All
+          </FilterButton>
+          <FilterButton
+            isActive={filterActive === 'active'}
+            onClick={() => setFilterActive('active')}
+          >
+            Active
+          </FilterButton>
+          <FilterButton
+            isActive={filterActive === 'inactive'}
+            onClick={() => setFilterActive('inactive')}
+          >
+            Inactive
+          </FilterButton>
+        </div>
+        <Table data={sortedData} onSort={handleSort} sortBy={sortBy} />
       </div>
-      <Table data={sortedData} onSort={handleSort} sortBy={sortBy} />
     </div>
   );
 }

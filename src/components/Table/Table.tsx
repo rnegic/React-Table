@@ -5,6 +5,7 @@ import { DataItem } from '../../types';
 import TableRow from './TableRow';
 import ChevronUp from '../../../public/chevron-up';
 import ChevronDown from '../../../public/chevron-down';
+import ChevronSelector from '../../../public/chevron-selector';
 
 interface TableProps {
     data: DataItem[];
@@ -44,10 +45,13 @@ const Table = ({ data, onSort, sortBy }: TableProps) => {
     const tableRows = useMemo(() => buildTree(data), [data]);
 
     const getSortIcon = (field: keyof DataItem | null) => {
-        if (!field || !sortBy || sortBy.field !== field) {
+        if (!field) {
             return null;
         }
-        return sortBy.order === 'asc' ? <ChevronUp/> : <ChevronDown/>;
+        if (sortBy && sortBy.field === field) {
+            return sortBy.order === 'asc' ? <ChevronUp /> : <ChevronDown />;
+        }
+        return <ChevronSelector />;
     };
 
     return (
