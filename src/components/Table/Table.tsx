@@ -1,6 +1,6 @@
 import styles from './Table.module.css';
 
-import { useState, useMemo, ReactNode } from 'react';
+import { useMemo, ReactNode } from 'react';
 import { DataItem } from '../../types';
 import TableRow from './TableRow';
 
@@ -10,7 +10,22 @@ interface TableProps {
     sortBy: { field: keyof DataItem; order: 'asc' | 'desc' } | null;
 }
 
+interface TableHeader {
+    field: keyof DataItem | null;
+    label: string;
+    sortable: boolean;
+}
+
 const Table = ({ data, onSort, sortBy }: TableProps) => {
+
+    const headers: TableHeader[] = [
+        { field: null, label: 'ID', sortable: false },
+        { field: null, label: 'Active', sortable: false },
+        { field: 'balance', label: 'Balance', sortable: true },
+        { field: 'name', label: 'Name', sortable: true },
+        { field: 'email', label: 'Email', sortable: true },
+    ];
+
     const buildTree = (items: DataItem[], parentId: number = 0): ReactNode[] => {
         return items
             .filter(item => item.parentId === parentId)
@@ -26,22 +41,26 @@ const Table = ({ data, onSort, sortBy }: TableProps) => {
 
     const tableRows = useMemo(() => buildTree(data), [data]);
 
-    const getSortIcon = (field: keyof DataItem) => {
-        if (sortBy && sortBy.field === field) {
-            return sortBy.order === 'asc' ? '▲' : '▼';
+    const getSortIcon = (field: keyof DataItem | null) => {
+        if (!field || !sortBy || sortBy.field !== field) {
+            return null;
         }
-        return null;
+        return sortBy.order === 'asc' ? '▲' : '▼';
     };
 
     return (
         <table className={styles.table}>
             <thead>
                 <tr>
-                    <th onClick={() => onSort('id')}>ID {getSortIcon('id')}</th>
-                    <th onClick={() => onSort('isActive')}>Active {getSortIcon('isActive')}</th>
-                    <th onClick={() => onSort('balance')}>Balance {getSortIcon('balance')}</th>
-                    <th onClick={() => onSort('name')}>Name {getSortIcon('name')}</th>
-                    <th onClick={() => onSort('email')}>Email {getSortIcon('email')}</th>
+                    {headers.map((header, index) => (
+                        <th
+                            key={index}
+                            onClick={header.sortable ? () => onSort(header.field!) : undefined}
+                            className={header.sortable ? styles.sortableHeader : ''}
+                        >
+                            {header.label} {getSortIcon(header.field)}
+                        </th>
+                    ))}
                 </tr>
             </thead>
             <tbody>
