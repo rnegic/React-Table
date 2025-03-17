@@ -5,13 +5,15 @@ import Table from './components/Table/Table';
 import styles from './App.module.css';
 
 function App() {
-  const [filterActive, setFilterActive] = useState<boolean | null>(null);
+  const [filterActive, setFilterActive] = useState<'all' | 'active' | 'inactive'>('all');
   const [sortBy, setSortBy] = useState<{ field: keyof DataItem; order: 'asc' | 'desc' } | null>(null);
 
   const filteredData = useMemo(() => {
     let result = data;
-    if (filterActive !== null) {
-      result = result.filter(item => item.isActive === filterActive);
+    if (filterActive === 'active') {
+      result = result.filter(item => item.isActive === true);
+    } else if (filterActive === 'inactive') {
+      result = result.filter(item => item.isActive === false);
     }
     return result;
   }, [filterActive, data]);
@@ -56,23 +58,25 @@ function App() {
   return (
     <div className={styles.app}>
       <h1>Таблица данных</h1>
-      <div className={styles.filters}>
-        <label>
-          <input
-            type="checkbox"
-            checked={filterActive === true}
-            onChange={() => setFilterActive(prev => prev === true ? null : true)}
-          />
-          Только активные
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={filterActive === false}
-            onChange={() => setFilterActive(prev => prev === false ? null : false)}
-          />
-          Только неактивные
-        </label>
+      <div className={styles.filterButtons}>
+        <button
+          className={filterActive === 'all' ? styles.activeButton : styles.button}
+          onClick={() => setFilterActive('all')}
+        >
+          All
+        </button>
+        <button
+          className={filterActive === 'active' ? styles.activeButton : styles.button}
+          onClick={() => setFilterActive('active')}
+        >
+          Active
+        </button>
+        <button
+          className={filterActive === 'inactive' ? styles.activeButton : styles.button}
+          onClick={() => setFilterActive('inactive')}
+        >
+          Inactive
+        </button>
       </div>
       <Table data={sortedData} onSort={handleSort} sortBy={sortBy} />
     </div>
