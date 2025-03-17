@@ -1,4 +1,4 @@
-const ChevronUp = () => (
+const ChevronSelector = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -11,9 +11,9 @@ const ChevronUp = () => (
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="3"
-            d="m6 15 6-6 6 6"
+            d="m7 15 5 5 5-5M7 9l5-5 5 5"
         ></path>
     </svg>
 );
 
-export default ChevronUp;
+export default ChevronSelector;

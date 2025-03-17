@@ -59,28 +59,32 @@ function App() {
   return (
     <div className={styles.app}>
       <div className={styles.wrapper}>
-        <h1>Таблица данных</h1>
-        <div className={styles.filterButtons}>
-          <FilterButton
-            isActive={filterActive === 'all'}
-            onClick={() => setFilterActive('all')}
-          >
-            All
-          </FilterButton>
-          <FilterButton
-            isActive={filterActive === 'active'}
-            onClick={() => setFilterActive('active')}
-          >
-            Active
-          </FilterButton>
-          <FilterButton
-            isActive={filterActive === 'inactive'}
-            onClick={() => setFilterActive('inactive')}
-          >
-            Inactive
-          </FilterButton>
+        <div className={styles.panel}>
+          <h1>Таблица данных</h1>
+          <div className={styles.filterButtons}>
+            <FilterButton
+              isActive={filterActive === 'all'}
+              onClick={() => setFilterActive('all')}
+            >
+              Все
+            </FilterButton>
+            <FilterButton
+              isActive={filterActive === 'active'}
+              onClick={() => setFilterActive('active')}
+            >
+              Активные
+            </FilterButton>
+            <FilterButton
+              isActive={filterActive === 'inactive'}
+              onClick={() => setFilterActive('inactive')}
+            >
+              Неактивные
+            </FilterButton>
+          </div>
         </div>
-        <Table data={sortedData} onSort={handleSort} sortBy={sortBy} />
+        <div className={styles.tableWrapper}>
+          <Table data={sortedData} onSort={handleSort} sortBy={sortBy} />
+        </div>
       </div>
     </div>
   );

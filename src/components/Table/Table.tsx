@@ -1,11 +1,10 @@
 import styles from './Table.module.css';
 
-import { useMemo, ReactNode } from 'react';
+import { useState, useMemo, ReactNode } from 'react';
 import { DataItem } from '../../types';
 import TableRow from './TableRow';
-import ChevronUp from '../../../public/chevron-up';
-import ChevronDown from '../../../public/chevron-down';
-import ChevronSelector from '../../../public/chevron-selector';
+import Chevron from '../../assets/Сhevron';
+import ChevronSelector from '../../assets/chevron-selector';
 
 interface TableProps {
     data: DataItem[];
@@ -21,35 +20,76 @@ interface TableHeader {
 
 const Table = ({ data, onSort, sortBy }: TableProps) => {
 
+    const [expandedRows, setExpandedRows] = useState<number[]>([]);
+
     const headers: TableHeader[] = [
+        { field: null, label: '', sortable: false },
         { field: null, label: 'ID', sortable: false },
-        { field: null, label: 'Active', sortable: false },
-        { field: 'balance', label: 'Balance', sortable: true },
-        { field: 'name', label: 'Name', sortable: true },
-        { field: 'email', label: 'Email', sortable: true },
+        { field: null, label: 'Статус', sortable: false },
+        { field: 'balance', label: 'Баланс', sortable: true },
+        { field: 'name', label: 'Имя', sortable: true },
+        { field: 'email', label: 'Почта', sortable: true },
     ];
 
-    const buildTree = (items: DataItem[], parentId: number = 0): ReactNode[] => {
-        return items
-            .filter(item => item.parentId === parentId)
-            .map(item => {
-                const children = buildTree(items, item.id);
-                return (
-                    <TableRow key={item.id} item={item} >
-                        {children.length > 0 && children}
-                    </TableRow>
-                );
-            });
+    const getAllDescendants = (items: DataItem[], parentId: number): number[] => {
+        const directChildren = items.filter(item => item.parentId === parentId);
+        let allDescendants: number[] = directChildren.map(child => child.id);
+
+        directChildren.forEach(child => {
+            const childDescendants = getAllDescendants(items, child.id);
+            allDescendants = [...allDescendants, ...childDescendants];
+        });
+
+        return allDescendants;
     };
 
-    const tableRows = useMemo(() => buildTree(data), [data]);
+    const toggleExpanded = (id: number) => {
+        setExpandedRows(prevExpandedRows => {
+            if (prevExpandedRows.includes(id)) {
+                const descendants = getAllDescendants(data, id);
+                return prevExpandedRows.filter(rowId => rowId !== id && !descendants.includes(rowId));
+            } else {
+                return [...prevExpandedRows, id];
+            }
+        });
+    };
+
+    const buildTree = (items: DataItem[], parentId: number = 0, level: number = 0): ReactNode[] => {
+        const rows: ReactNode[] = [];
+
+        items
+            .filter(item => item.parentId === parentId)
+            .forEach(item => {
+                const hasChildren = items.some(child => child.parentId === item.id);
+                const isExpanded = expandedRows.includes(item.id);
+
+                rows.push(
+                    <TableRow
+                        key={item.id}
+                        item={item}
+                        hasChildren={hasChildren}
+                        level={level}
+                        isExpanded={isExpanded}
+                        toggleExpanded={() => toggleExpanded(item.id)}
+                    />
+                );
+
+                if (isExpanded && hasChildren) {
+                    rows.push(...buildTree(items, item.id, level + 1));
+                }
+            });
+
+        return rows;
+    };
+
+    const tableRows = useMemo(() => buildTree(data), [data, expandedRows]);
 
     const getSortIcon = (field: keyof DataItem | null) => {
         if (!field) {
             return null;
         }
         if (sortBy && sortBy.field === field) {
-            return sortBy.order === 'asc' ? <ChevronUp /> : <ChevronDown />;
+            return <Chevron isOpen={sortBy.order === 'desc'} />;
         }
         return <ChevronSelector />;
     };
@@ -64,7 +104,7 @@ const Table = ({ data, onSort, sortBy }: TableProps) => {
                             onClick={header.sortable ? () => onSort(header.field!) : undefined}
                             className={header.sortable ? styles.sortableHeader : ''}
                         >
-                            {header.label} {getSortIcon(header.field)}
+                            {header.label !== '' ? header.label : null} {getSortIcon(header.field)}
                         </th>
                     ))}
                 </tr>
