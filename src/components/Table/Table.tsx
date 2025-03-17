@@ -3,6 +3,8 @@ import styles from './Table.module.css';
 import { useMemo, ReactNode } from 'react';
 import { DataItem } from '../../types';
 import TableRow from './TableRow';
+import ChevronUp from '../../../public/chevron-up';
+import ChevronDown from '../../../public/chevron-down';
 
 interface TableProps {
     data: DataItem[];
@@ -45,7 +47,7 @@ const Table = ({ data, onSort, sortBy }: TableProps) => {
         if (!field || !sortBy || sortBy.field !== field) {
             return null;
         }
-        return sortBy.order === 'asc' ? '▲' : '▼';
+        return sortBy.order === 'asc' ? <ChevronUp/> : <ChevronDown/>;
     };
 
     return (
